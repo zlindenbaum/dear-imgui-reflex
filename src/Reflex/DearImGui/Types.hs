@@ -45,6 +45,8 @@ import Reflex.SDL2
     ReflexSDL2,
     holdView,
   )
+import Data.Text (Text)
+import qualified Data.Text as T
 
 -- | Strict, inductive tuple.
 data a :/\ b = !a :/\ !b
@@ -113,7 +115,7 @@ mkButton tD f = do
 button ::
   ( ImGuiSDLReflex t m
   ) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   m (Event t ())
 button tD = mkButton tD DearImGui.button
 
@@ -122,7 +124,7 @@ button tD = mkButton tD DearImGui.button
 window ::
   ( ImGuiSDLReflex t m
   ) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   m a ->
   m a
 window tD child = do
@@ -136,7 +138,7 @@ window tD child = do
 childWindow ::
   ( ImGuiSDLReflex t m
   ) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   m a ->
   m a
 childWindow tD child = do
@@ -149,7 +151,7 @@ childWindow tD child = do
 text ::
   ( ImGuiSDLReflex t m
   ) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   m ()
 text tD = do
   commitAction $ ffor tD DearImGui.text
@@ -178,7 +180,7 @@ sameLine child = do
 smallButton ::
   ( ImGuiSDLReflex t m
   ) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   m (Event t ())
 smallButton tD = mkButton tD DearImGui.smallButton
 
@@ -186,7 +188,7 @@ smallButton tD = mkButton tD DearImGui.smallButton
 arrowButton ::
   ( ImGuiSDLReflex t m
   ) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   Dynamic t DearImGui.ImGuiDir ->
   m (Event t ())
 arrowButton tD dD = mkButton (zipDyn tD dD) (uncurry DearImGui.arrowButton)
@@ -196,7 +198,7 @@ checkbox ::
   ( ImGuiSDLReflex t m
   ) =>
   Bool ->
-  Dynamic t String ->
+  Dynamic t Text ->
   m (Event t Bool)
 checkbox initValue labelD = do
   ref <- liftIO $ newIORef initValue
@@ -216,7 +218,7 @@ progressBar ::
   ( ImGuiSDLReflex t m
   ) =>
   Dynamic t Float ->
-  Dynamic t (Maybe String) ->
+  Dynamic t (Maybe Text) ->
   m ()
 progressBar progressD overlayD = do
   let stD = zipDyn progressD overlayD
@@ -249,9 +251,9 @@ safeHead (x : _) = Just x
 -- select a value of `a`
 comboFromBoundedEnum ::
   (Enum a, Bounded a, ImGuiSDLReflex t m) =>
-  String ->
-  String ->
-  (a -> String) ->
+  Text ->
+  Text ->
+  (a -> Text) ->
   m (Event t (Maybe a))
 comboFromBoundedEnum label previewValue showFn = do
   (eOpen, eFire) <- newTriggerEvent
@@ -304,8 +306,8 @@ zipDyn4 a = zipf (zipDyn3 a) zipDyn'
 
 dragFloat' ::
   (ImGuiSDLReflex t m) =>
-  (String -> IORef a -> Float -> Float -> Float -> IO Bool) ->
-  Dynamic t String ->
+  (Text -> IORef a -> Float -> Float -> Float -> IO Bool) ->
+  Dynamic t Text ->
   a ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -330,7 +332,7 @@ dragFloat' f descD initValue speedD minValueD maxValueD = do
 
 dragFloat ::
   (ImGuiSDLReflex t m) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   Float ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -340,7 +342,7 @@ dragFloat = dragFloat' DearImGui.dragFloat
 
 dragFloat2 ::
   (ImGuiSDLReflex t m) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   (Float, Float) ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -350,7 +352,7 @@ dragFloat2 = dragFloat' DearImGui.dragFloat2
 
 dragFloat3 ::
   (ImGuiSDLReflex t m) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   (Float, Float, Float) ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -360,7 +362,7 @@ dragFloat3 = dragFloat' DearImGui.dragFloat3
 
 dragFloat4 ::
   (ImGuiSDLReflex t m) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   (Float, Float, Float, Float) ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -370,8 +372,8 @@ dragFloat4 = dragFloat' DearImGui.dragFloat4
 
 sliderFloat' ::
   (ImGuiSDLReflex t m) =>
-  (String -> IORef a -> Float -> Float -> IO Bool) ->
-  Dynamic t String ->
+  (Text -> IORef a -> Float -> Float -> IO Bool) ->
+  Dynamic t Text ->
   a ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -395,7 +397,7 @@ sliderFloat' f descD initValue minValueD maxValueD = do
 
 sliderFloat ::
   (ImGuiSDLReflex t m) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   Float ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -404,7 +406,7 @@ sliderFloat = sliderFloat' DearImGui.sliderFloat
 
 sliderFloat2 ::
   (ImGuiSDLReflex t m) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   (Float, Float) ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -413,7 +415,7 @@ sliderFloat2 = sliderFloat' DearImGui.sliderFloat2
 
 sliderFloat3 ::
   (ImGuiSDLReflex t m) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   (Float, Float, Float) ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -422,7 +424,7 @@ sliderFloat3 = sliderFloat' DearImGui.sliderFloat3
 
 sliderFloat4 ::
   (ImGuiSDLReflex t m) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   (Float, Float, Float, Float) ->
   Dynamic t Float ->
   Dynamic t Float ->
@@ -431,7 +433,7 @@ sliderFloat4 = sliderFloat' DearImGui.sliderFloat4
 
 colorPicker ::
   (ImGuiSDLReflex t m) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   DearImGui.ImVec3 ->
   m (Event t DearImGui.ImVec3)
 colorPicker descD initValue = do
@@ -454,7 +456,7 @@ colorPicker descD initValue = do
 plotHistogram ::
   ( ImGuiSDLReflex t m
   ) =>
-  Dynamic t String ->
+  Dynamic t Text ->
   Dynamic t [Float] ->
   m ()
 plotHistogram tD dD = do
@@ -482,7 +484,7 @@ menuBar child = do
 mainMenuBarFromBoundedEnum ::
   (Has Enum f, Has Bounded f, Has Show f, ImGuiSDLReflex t m) =>
   Dynamic t [Some f] ->
-  (Some f -> String) ->
+  (Some f -> Text) ->
   m (Event t (Maybe (DSum f Identity)))
 mainMenuBarFromBoundedEnum msD showFn = do
   (eSelected, eFire) <- newTriggerEvent
