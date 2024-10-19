@@ -24,7 +24,7 @@ source-repository head
 
 common common-options
   build-depends:
-    , base                    ^>=4.13.0.0
+    base >= 4.13 && < 4.21,
     , bytestring
     , constraints
     , constraints-extras
