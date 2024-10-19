@@ -45,6 +45,7 @@ common common-options
     , StateVar
     , some
     , stm
+    , text
 
   ghc-options:
     -Wall -Wcompat -Widentities -Wincomplete-uni-patterns
