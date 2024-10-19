@@ -12,7 +12,9 @@
 
 module Reflex.DearImGui.Types where
 
-import Control.Monad.Reader (MonadFix, MonadIO (..), void)
+import Control.Monad (void)
+import Control.Monad.Fix (MonadFix)
+import Control.Monad.Reader (MonadIO (..))
 import Data.Coerce (coerce)
 import Data.Constraint.Extras (Has, has)
 import Data.Dependent.Sum (DSum (..), (==>))
